@@ -7,5 +7,7 @@ matplotlib
 xgboost
 dill
 Flask
-
-# -e .
+pymongo
+requests
+setuptools
+-e .
