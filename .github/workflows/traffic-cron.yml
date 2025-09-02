@@ -27,4 +27,4 @@ jobs:
       env:
         TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         MONGO_URI: ${{ secrets.MONGO_URI }}
-      run: python data.py
+      run: python src/Data/fetch_traffic_data.py
