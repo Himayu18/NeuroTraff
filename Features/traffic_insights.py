@@ -1,9 +1,14 @@
 import pandas as pd 
 import datetime
+import os 
+trainset_path = os.path.join("artifacts", "TransformedData", "train_data_transformed.csv")
+testset_path = os.path.join("artifacts", "TransformedData", "test_data_transformed.csv")
+rawdf_path = os.path.join("artifacts", "RawData", "raw_data.csv")
 
-trainset = pd.read_csv(r"artifacts\TransformedData\train_data_transformed.csv")
-testset = pd.read_csv(r"artifacts/TransformedData/test_data_transformed.csv")
-rawdf = pd.read_csv(r"artifacts/RawData/raw_data.csv")
+# Load datasets
+trainset = pd.read_csv(trainset_path)
+testset = pd.read_csv(testset_path)
+rawdf = pd.read_csv(rawdf_path)
 new_df = pd.concat([trainset,testset])
 new_df['road'] = rawdf['road']
 year = 2025

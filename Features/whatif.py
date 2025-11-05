@@ -5,7 +5,7 @@ import joblib
 from datetime import datetime, timezone
 from flask import Flask, request, jsonify, render_template
 from src.components.data_transformation import ColumnRemover,LabelEncoderTransformer,TimestampTransformer,DelayTransformer,CoordinatesTransformer,TrafficLevelTransformer,DataTransformer
-
+import os 
 API_KEY = 'cpZXnWw9uzrumJ7scFawXV328QM7F8NP'
 if not API_KEY:
     raise Exception("ERROR: Missing API_KEY environment variable.")
@@ -224,8 +224,11 @@ def analyze_whatif(data):
         # Time = Distance / Speed, so if speed reduces, time increases proportionally
         df['currentTravelTime'] = (df['currentTravelTime'] / speed_reduction_factor).round().astype(int)
         
-        transformer = joblib.load(r"artifacts\Piplines\traffic_pipeline.pkl")
-        model = joblib.load(r"artifacts\Piplines\best_model.pkl")
+        transformer_path = os.path.join("artifacts", "Piplines", "traffic_pipeline.pkl")
+        model_path = os.path.join("artifacts", "Piplines", "best_model.pkl")
+
+        transformer = joblib.load(transformer_path)
+        model = joblib.load(model_path)
         X_transformed = transformer.transform(df)
         delay_values = X_transformed["Delay"].values
         average_delay = delay_values.mean()
