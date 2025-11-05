@@ -9,5 +9,6 @@ dill
 Flask
 pymongo
 requests
+joblib
 setuptools
 -e .
