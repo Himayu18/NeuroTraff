@@ -4,17 +4,20 @@ FROM python:3.13-slim
 # Step 2: Set the working directory inside the container
 WORKDIR /app
 
-# Step 3: Copy only requirements first for caching
-COPY requirements.txt .
+# Step 3: Copy setup.py and requirements.txt first
+COPY setup.py requirements.txt ./
 
-# Step 4: Install dependencies
+# Step 4: Copy your package code (so -e . works)
+COPY src/ ./src  
+
+# Step 5: Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Step 5: Copy the rest of your app
+# Step 6: Copy the rest of your app (templates, static, etc.)
 COPY . .
 
-# Step 6: Expose the port your Flask app will run on
+# Step 7: Expose the port your Flask app will run on
 EXPOSE 5000
 
-# Step 7: Start the app with Gunicorn
+# Step 8: Start the app with Gunicorn
 CMD ["gunicorn", "app:app", "-w", "2", "--timeout", "300", "-b", "0.0.0.0:5000"]
