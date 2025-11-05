@@ -2,7 +2,7 @@ from src.components.data_transformation import ColumnRemover,LabelEncoderTransfo
 import os
 import sys
 from src.exception import CustomException
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import requests
 from datetime import datetime, timezone
 import json
@@ -16,6 +16,10 @@ import Features.prediction as prediction
 
 app = Flask(__name__)
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 #navigations
 @app.route('/')
 def home():
