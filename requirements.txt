@@ -10,5 +10,7 @@ Flask
 pymongo
 requests
 joblib
+gunicorn
+
 setuptools
 -e .
