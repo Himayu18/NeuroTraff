@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTraff - Predictions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor: pointer;">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <nav class="main-nav" id="navbar">
+                <a href="{{ url_for('home') }}" class="nav-link active">Home</a>
+                <a href="{{ url_for('predictions') }}" class="nav-link">WhatIfTraffic</a>
+                <a href="{{ url_for('analytics') }}" class="nav-link">Traffic Insights</a>
+                <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('feedback') }}" class="feedback-btn">Submit Feedback</a>
+            </nav>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Real-time Analysis</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="what-if-section" id="whatIfSection">
+        <div class="card what-if-card">
+            <div class="card-header">
+                <h3 class="card-title">🔮 What-If Traffic Analysis</h3>
+                <p style="color: #8b92a7; font-size: 0.9rem; margin-top: 0.5rem;">
+                    Simulate different conditions to predict traffic levels
+                </p>
+            </div>
+
+            <div class="what-if-controls">
+                <!-- Road Selection -->
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">🛣️</span>
+                        Select Road
+                    </label>
+                    <select id="roadSelector" class="road-selector">
+                        <option value="">Select a Road</option>
+                        <option value="SH-42 (Ghodbunder Road)">SH-42 (Ghodbunder Road)</option>
+                        <option value="Eastern Express Highway">Eastern Express Highway</option>
+                        <option value="Mumbai-Nashik Expressway (NH 3)">Mumbai-Nashik Expressway</option>
+                        <option value="LBS Marg">LBS Marg</option>
+                        <option value="Thane-Belapur Road">Thane-Belapur Road</option>
+                        <option value="Sion-Panvel Expressway">Sion-Panvel Expressway</option>
+                        <option value="MDR 64">MDR 64</option>
+                        <option value="SH 40">SH 40</option>
+                        <option value="MDR 62">MDR 62</option>
+                        <option value="Ring Road (Kalyan-Dombivli)">Ring Road (Kalyan-Dombivli)</option>
+                        <option value="Multi-Modal Corridor">Multi-Modal Corridor</option>
+                        <option value="Mumbra Bypass Road">Mumbra Bypass Road</option>
+                        <option value="Kalyan-Shilphata Road">Kalyan-Shilphata Road</option>
+                        <option value="Kalyan-Bhiwandi Road">Kalyan-Bhiwandi Road</option>
+                        <option value="Kalyan-Badlapur Road">Kalyan-Badlapur Road</option>
+                        <option value="Dombivli-Manpada Road">Dombivli-Manpada Road</option>
+                        <option value="Bhiwandi Bypass Road">Bhiwandi Bypass Road</option>
+                        <option value="Airoli-Thane Creek Bridge Road">Airoli-Thane Creek Bridge Road</option>
+                        <option value="Dombivli-Kalyan Link Road">Dombivali-Kalyan Link Road</option>
+                        <option value="Kalyan-Karjat Road">Kalyan-Karjat Road</option>
+                    </select>
+                </div>
+
+                <!-- Time of Travel -->
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">🕐</span>
+                        Time of Travel
+                        <span class="control-value" id="timeValue">12:00</span>
+                    </label>
+                    <input type="range" class="slider time-slider" id="timeSlider" min="0" max="23" value="12" step="1"
+                        oninput="document.getElementById('timeValue').textContent = this.value.padStart(2, '0') + ':00'">
+                    <div class="slider-labels">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>23:00</span>
+                    </div>
+                </div>
+
+                <!-- Weather Condition -->
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">🌧️</span>
+                        Rain Condition
+                    </label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="rainCheckbox" class="custom-checkbox">
+                        <label for="rainCheckbox" class="checkbox-label">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Rainy Weather</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Vehicle Volume -->
+
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">🚗</span>
+                        Vehicle Volume
+                        <span class="control-value" id="vehicleValue">Normal (100%)</span>
+                    </label>
+                    <input type="range" class="slider vehicle-slider" id="vehicleSlider" min="50" max="200" value="100"
+                        step="10"
+                        oninput="var v = this.value; var label = v < 75 ? 'Low (' + v + '%)' : v <= 125 ? 'Normal (' + v + '%)' : v <= 175 ? 'High (' + v + '%)' : 'Very High (' + v + '%)'; document.getElementById('vehicleValue').textContent = label;">
+                    <div class="slider-labels">
+                        <span>Low (50%)</span>
+                        <span>Normal (100%)</span>
+                        <span>High (150%)</span>
+                        <span>Very High (200%)</span>
+                    </div>
+                </div>
+
+
+                <!-- Accident Condition -->
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">⚠️</span>
+                        Accident Scenario
+                    </label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="accidentCheckbox" class="custom-checkbox"
+                            onchange="document.getElementById('severityGroup').style.display = this.checked ? 'block' : 'none'">
+                        <label for="accidentCheckbox" class="checkbox-label">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Accident Occurred</span>
+                        </label>
+                    </div>
+                    <div class="severity-group" id="severityGroup" style="display: none; margin-top: 1rem;">
+                        <label class="severity-label">Severity Level:</label>
+                        <div class="severity-buttons">
+                            <button type="button" class="severity-btn" data-severity="minor"
+                                onclick="var btns = document.querySelectorAll('.severity-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                                Minor
+                            </button>
+                            <button type="button" class="severity-btn" data-severity="moderate"
+                                onclick="var btns = document.querySelectorAll('.severity-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                                Moderate
+                            </button>
+                            <button type="button" class="severity-btn active" data-severity="severe"
+                                onclick="var btns = document.querySelectorAll('.severity-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                                Severe
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Day Type -->
+                <div class="control-group">
+                    <label class="control-label">
+                        <span class="label-icon">📅</span>
+                        Day Type
+                    </label>
+                    <div class="day-type-selector">
+                        <button type="button" class="day-type-btn active" data-day="weekday"
+                            onclick="var btns = document.querySelectorAll('.day-type-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                            <span class="btn-icon">💼</span>
+                            <span>Weekday</span>
+                        </button>
+                        <button type="button" class="day-type-btn" data-day="weekend"
+                            onclick="var btns = document.querySelectorAll('.day-type-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                            <span class="btn-icon">🎉</span>
+                            <span>Weekend</span>
+                        </button>
+                        <button type="button" class="day-type-btn" data-day="holiday"
+                            onclick="var btns = document.querySelectorAll('.day-type-btn'); btns.forEach(function(b){ b.classList.remove('active'); }); this.classList.add('active');">
+                            <span class="btn-icon">🎊</span>
+                            <span>Holiday</span>
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Analyze Button -->
+                <button class="analyze-btn" onclick="analyzeWhatIf()">
+                    <span class="btn-icon">🔍</span>
+                    Analyze Traffic
+                </button>
+            </div>
+
+            <!-- Results Display -->
+            <div class="what-if-result" id="whatIfResult" style="display: none;">
+                <div class="result-header">Predicted Traffic Level</div>
+                <div class="result-level" id="resultLevel">Medium</div>
+                <div class="result-description" id="resultDescription">
+                    Based on your selected conditions, moderate traffic is expected.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

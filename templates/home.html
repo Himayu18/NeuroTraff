@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTraff - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor: pointer;">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <nav class="main-nav" id="navbar">
+                <a href="{{ url_for('home') }}" class="nav-link active">Home</a>
+                <a href="{{ url_for('predictions') }}" class="nav-link">What If Traffic</a>
+                <a href="{{ url_for('analytics') }}" class="nav-link">Traffic Insights</a>
+                <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('feedback') }}" class="feedback-btn">Submit Feedback</a>
+            </nav>
+
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Real-time Analysis</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section id="home" class="section active">
+            <div class="search-section">
+                <h2 class="search-title">Traffic Congestion Prediction System</h2>
+                <p class="search-subtitle">Advanced AI-powered traffic analysis for Thane's major roadways</p>
+                <div class="dropdown-container">
+                    <select class="road-dropdown" id="roadDropdown" onchange="selectFromDropdown()">
+                        <option value="">Select a Road</option>
+                        <option value="SH-42 (Ghodbunder Road)">SH-42 (Ghodbunder Road)</option>
+                        <option value="Eastern Express Highway">Eastern Express Highway</option>
+                        <option value="Mumbai-Nashik Expressway (NH 3)">Mumbai-Nashik Expressway</option>
+                        <option value="LBS Marg">LBS Marg</option>
+                        <option value="Thane-Belapur Road">Thane-Belapur Road</option>
+                        <option value="Sion-Panvel Expressway">Sion-Panvel Expressway</option>
+                        <option value="MDR 64">MDR 64</option>
+                        <option value="SH 40">SH 40</option>
+                        <option value="MDR 62">MDR 62</option>
+                        <option value="Ring Road (Kalyan-Dombivli)">Ring Road (Kalyan-Dombivli)</option>
+                        <option value="Multi-Modal Corridor">Multi-Modal Corridor</option>
+                        <option value="Mumbra Bypass Road">Mumbra Bypass Road</option>
+                        <option value="Kalyan-Shilphata Road">Kalyan-Shilphata Road</option>
+                        <option value="Kalyan-Bhiwandi Road">Kalyan-Bhiwandi Road</option>
+                        <option value="Kalyan-Badlapur Road">Kalyan-Badlapur Road</option>
+                        <option value="Dombivli-Manpada Road">Dombivli-Manpada Road</option>
+                        <option value="Bhiwandi Bypass Road">Bhiwandi Bypass Road</option>
+                        <option value="Airoli-Thane Creek Bridge Road">Airoli-Thane Creek Bridge Road</option>
+                        <option value="Dombivli-Kalyan Link Road">Dombivali-Kalyan Link Road</option>
+                        <option value="Kalyan-Karjat Road">Kalyan-Karjat Road</option>
+                    </select>
+                    <button class="search-btn" onclick="predictTraffic()">Predict</button>
+                </div>
+
+                <div class="quick-select">
+                    <div class="quick-btn" onclick="selectRoad('SH-42 (Ghodbunder Road)')">SH-42 Ghodbunder Road</div>
+                    <div class="quick-btn" onclick="selectRoad('Eastern Express Highway')">Eastern Express Highway</div>
+                    <div class="quick-btn" onclick="selectRoad('Kalyan-Bhiwandi Road')">Kalyan-Bhiwandi Road</div>
+                    <div class="quick-btn" onclick="selectRoad('Mumbra Bypass Road')">Mumbra Bypass Road</div>
+                    <div class="quick-btn" onclick="selectRoad('Kalyan-Karjat Road')">Kalyan-Karjat Road</div>
+                </div>
+            </div>
+
+            <div class="dashboard" id="dashboard" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Traffic Level</h3>
+                        <div class="card-icon traffic-level">🚗</div>
+                    </div>
+                    <div class="metric-value" id="trafficLevel">--</div>
+                    <div class="metric-label">Current Congestion Status</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill traffic-medium" id="trafficProgress" style="width: 0%;"></div>
+                    </div>
+                    <div class="change-indicator change-negative">
+                        <span id="trafficChange">Waiting for prediction...</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Clear Time Estimates</h3>
+                        <div class="card-icon time-estimate">⏱️</div>
+                    </div>
+                    <div class="metric-value" id="clearTime">--</div>
+                    <div class="metric-label">In Minutes</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill traffic-medium" style="width: 0%;"></div>
+                    </div>
+                    <div class="change-indicator change-positive">
+                        <span id="timeChange">Fetching clear Time...</span>
+                    </div>
+                </div>
+
+                
+
+                <div class="card vehicle-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recommended Vehicle</h3>
+                    </div>
+                    <div class="vehicle-icon-display">
+                        <div class="vehicle-recommendation" id="vehicleIcon">🚗</div>
+                    </div>
+                    <div class="metric-value" id="vehicleType">--</div>
+                    <div class="metric-label">Best Transport Mode</div>
+                    <div class="vehicle-progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill traffic-medium" id="vehicleProgress" style="width: 0%;"></div>
+                        </div>
+                        <div class="change-indicator change-positive" id="vehicleIndicator">
+                            <span id="vehicleStatus">Waiting for traffic data...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-predictions">
+                    <h3 style="color: #00d4ff; margin-bottom: 1rem; font-size: 1.3rem;">Recent Predictions</h3>
+                    <div class="predictions-list" id="predictionsList">
+                        <div class="no-data" id="noDataMessage">
+                            <p style="color: #a0a0a0; text-align: center; padding: 2rem;">📊 No predictions yet. Select a road to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

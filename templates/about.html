@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTraff - About</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor: pointer;">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <nav class="main-nav" id="navbar">
+                <a href="{{ url_for('home') }}" class="nav-link active">Home</a>
+                <a href="{{ url_for('predictions') }}" class="nav-link">WhatIfTraffic</a>
+                <a href="{{ url_for('analytics') }}" class="nav-link">Traffic Insights</a>
+                <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('feedback') }}" class="feedback-btn">Submit Feedback</a>
+            </nav>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Real-time Analysis</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section id="about" class="section active">
+            <h2 class="page-title">About NeuroTraff</h2>
+            
+            <!-- Story Behind the App -->
+            <div class="content-card story-card">
+                <div class="story-icon">🌆</div>
+                <h3>The Story Behind NeuroTraff</h3>
+                <p class="story-text">
+                    With <strong>increasing congestion in Thane district</strong>, daily commuters face unpredictable delays, 
+                    stress, and lost productivity. NeuroTraff was born from a simple yet powerful vision: 
+                    <em>What if we could predict traffic before it happens?</em>
+                </p>
+                <p class="story-text">
+                    This project leverages <strong>machine learning and open data</strong> to predict real-time traffic levels, 
+                    empowering commuters to make <strong>smarter travel decisions</strong>. Whether you're planning your morning 
+                    commute or scheduling a business meeting, NeuroTraff helps you arrive on time, every time.
+                </p>
+                <div class="story-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">🚗</div>
+                        <div class="stat-label">Traffic Patterns Analyzed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">⚡</div>
+                        <div class="stat-label">Real-Time Predictions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">🎯</div>
+                        <div class="stat-label">Smart Route Planning</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="content-card how-it-works-card">
+                <h3>How It Works</h3>
+                <div class="workflow-container">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">🗺️</div>
+                        <h4>Select Your Road</h4>
+                        <p>Choose from major roads in Thane district to get started</p>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🤖</div>
+                        <h4>AI Prediction</h4>
+                        <p>Our ML model analyzes patterns and predicts traffic levels</p>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">📊</div>
+                        <h4>View Insights</h4>
+                        <p>Dashboard displays detailed analytics and recommendations</p>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">🔮</div>
+                        <h4>What-If Scenarios</h4>
+                        <p>Simulate changes like weather, time, or accidents</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technology Stack -->
+            <div class="content-card tech-stack-card">
+                <h3>Technology Stack</h3>
+                <p class="tech-intro">Powered by cutting-edge technologies and robust machine learning algorithms</p>
+                
+                <div class="tech-grid">
+                    <!-- Backend -->
+                    <div class="tech-category">
+                        <h4 class="tech-category-title">Backend</h4>
+                        <div class="tech-badges">
+                            <div class="tech-badge backend">
+                                <span class="badge-icon">🐍</span>
+                                <span class="badge-text">Python</span>
+                            </div>
+                            <div class="tech-badge backend">
+                                <span class="badge-icon">🌶️</span>
+                                <span class="badge-text">Flask</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Frontend -->
+                    <div class="tech-category">
+                        <h4 class="tech-category-title">Frontend</h4>
+                        <div class="tech-badges">
+                            <div class="tech-badge frontend">
+                                <span class="badge-icon">📄</span>
+                                <span class="badge-text">HTML5</span>
+                            </div>
+                            <div class="tech-badge frontend">
+                                <span class="badge-icon">🎨</span>
+                                <span class="badge-text">CSS3</span>
+                            </div>
+                            <div class="tech-badge frontend">
+                                <span class="badge-icon">⚡</span>
+                                <span class="badge-text">JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database -->
+                    <div class="tech-category">
+                        <h4 class="tech-category-title">Database</h4>
+                        <div class="tech-badges">
+                            <div class="tech-badge database">
+                                <span class="badge-icon">🍃</span>
+                                <span class="badge-text">MongoDB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deployment -->
+                    <div class="tech-category">
+                        <h4 class="tech-category-title">Deployment</h4>
+                        <div class="tech-badges">
+                            <div class="tech-badge deployment">
+                                <span class="badge-icon">🚀</span>
+                                <span class="badge-text">Render</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ML Models -->
+                    <div class="tech-category full-width">
+                        <h4 class="tech-category-title">Machine Learning Models</h4>
+                        <div class="tech-badges ml-badges">
+                            <div class="tech-badge ml-model">
+                                <span class="badge-icon">🌲</span>
+                                <span class="badge-text">Random Forest</span>
+                            </div>
+                            <div class="tech-badge ml-model">
+                                <span class="badge-icon">📈</span>
+                                <span class="badge-text">Gradient Boost</span>
+                            </div>
+                            <div class="tech-badge ml-model">
+                                <span class="badge-icon">⚡</span>
+                                <span class="badge-text">XGBoost</span>
+                            </div>
+                            <div class="tech-badge ml-model">
+                                <span class="badge-icon">🐱</span>
+                                <span class="badge-text">CatBoost</span>
+                            </div>
+                            <div class="tech-badge ml-model">
+                                <span class="badge-icon">🔄</span>
+                                <span class="badge-text">AdaBoost</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

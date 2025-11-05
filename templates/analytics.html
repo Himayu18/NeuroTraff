@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTraff - Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor: pointer;">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <nav class="main-nav" id="navbar">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('predictions') }}" class="nav-link">WhatIfTraffic</a>
+                <a href="{{ url_for('analytics') }}" class="nav-link active">Traffic Insights</a>
+                <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('feedback') }}" class="feedback-btn">Submit Feedback</a>
+            </nav>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Real-time Analysis</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section id="analytics" class="section active">
+            <h2 class="page-title">Traffic Analytics Dashboard</h2>
+
+            <!-- Road Selection for Analytics -->
+            <div class="analytics-selector">
+                <select class="road-dropdown" id="analyticsRoadDropdown" onchange="loadAnalyticsDashboard()">
+                    <option value="">Select a Road for Analytics</option>
+                    <option value="SH-42 (Ghodbunder Road)">SH-42 (Ghodbunder Road)</option>
+                    <option value="Eastern Express Highway">Eastern Express Highway</option>
+                    <option value="Mumbai-Nashik Expressway (NH 3)">Mumbai-Nashik Expressway</option>
+                    <option value="LBS Marg">LBS Marg</option>
+                    <option value="Thane-Belapur Road">Thane-Belapur Road</option>
+                    <option value="Sion-Panvel Expressway">Sion-Panvel Expressway</option>
+                    <option value="MDR 64">MDR 64</option>
+                    <option value="SH 40">SH 40</option>
+                    <option value="MDR 62">MDR 62</option>
+                    <option value="Ring Road (Kalyan-Dombivli)">Ring Road (Kalyan-Dombivli)</option>
+                    <option value="Multi-Modal Corridor">Multi-Modal Corridor</option>
+                    <option value="Mumbra Bypass Road">Mumbra Bypass Road</option>
+                    <option value="Kalyan-Shilphata Road">Kalyan-Shilphata Road</option>
+                    <option value="Kalyan-Bhiwandi Road">Kalyan-Bhiwandi Road</option>
+                    <option value="Kalyan-Badlapur Road">Kalyan-Badlapur Road</option>
+                    <option value="Dombivli-Manpada Road">Dombivli-Manpada Road</option>
+                    <option value="Bhiwandi Bypass Road">Bhiwandi Bypass Road</option>
+                    <option value="Airoli-Thane Creek Bridge Road">Airoli-Thane Creek Bridge Road</option>
+                    <option value="Dombivli-Kalyan Link Road">Dombivali-Kalyan Link Road</option>
+                    <option value="Kalyan-Karjat Road">Kalyan-Karjat Road</option>
+                </select>
+            </div>
+            <div class="selected-road-display">
+                <span class="road-name-badge" id="selectedRoadName"></span>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div id="analyticsDashboard" style="display: none;">
+                <!-- Top Metrics Row -->
+                <div class="analytics-top-row">
+                    <!-- Carbon Emission Card -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <h4>Carbon Emission Rate</h4>
+                            <div class="metric-icon">🌿</div>
+                        </div>
+                        <div class="metric-card-value" id="carbonEmission">--</div>
+                        <div class="metric-card-label">kg CO₂ per Trip</div>
+                        <div class="metric-card-trend">
+                            <span id="carbonTrend">Calculating...</span>
+                        </div>
+                    </div>
+
+                    <!-- Travel Time Variability Card -->
+                    <div class="metric-card">
+                        <div class="metric-card-header">
+                            <h4>Travel Time Variability</h4>
+                            <div class="metric-icon">⏱️</div>
+                        </div>
+                        <div class="metric-card-value" id="travelVariability">--</div>
+                        <div class="metric-card-label">variance in %</div>
+                        <div class="metric-card-trend">
+                            <span id="variabilityTrend">Calculating...</span>
+                        </div>
+                    </div>
+
+                    <!-- Congestion Rate Gauge -->
+                    <div class="metric-card gauge-card">
+                        <div class="metric-card-header">
+                            <h4>Congestion Rate</h4>
+                            <div class="metric-icon">🚦</div>
+                        </div>
+                        <div class="gauge-container">
+                            <svg class="congestion-gauge" viewBox="0 0 200 120">
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"
+                                    stroke="rgba(255,255,255,0.1)" stroke-width="20" stroke-linecap="round" />
+                                <path id="gaugeFill" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"
+                                    stroke="#00d4ff" stroke-width="20" stroke-linecap="round" stroke-dasharray="251.2"
+                                    stroke-dashoffset="251.2" />
+                                <text x="100" y="90" text-anchor="middle" fill="#fff" font-size="32" font-weight="bold"
+                                    id="gaugeValue">0%</text>
+                            </svg>
+                            <div id="gaugeLabel" class="metric-card-label"></div>
+                        </div>
+                        <div class="congestion-badges">
+                            <span class="badge badge-low" id="badgeLow">Low</span>
+                            <span class="badge badge-med" id="badgeMed">Medium</span>
+                            <span class="badge badge-high" id="badgeHigh">High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peak Hours Chart - Full Width -->
+                <div class="analytics-chart-full">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4>Peak Hours Analysis</h4>
+                            <span class="chart-subtitle">Average Speed by Hour</span>
+                        </div>
+                        <div id="peakChartLoading" class="chart-loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <p>Loading peak hours chart...</p>
+                        </div>
+                        <canvas id="peakHoursChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

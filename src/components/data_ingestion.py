@@ -9,10 +9,11 @@ from datetime import datetime, timedelta, date
 
 @dataclass
 class DataIngestionConfig:
-    raw_data_path:str = os.path.join('artifacts','raw_data.csv')
-    train_data_path:str = os.path.join('artifacts','train_data.csv')
-    test_data_path:str = os.path.join('artifacts','test_data.csv')
-    new_data_path:str = os.path.join('artifacts','new_data.csv')
+    data_dir = os.path.join('artifacts', 'RawData')
+    raw_data_path:str = os.path.join(data_dir,'raw_data.csv')
+    train_data_path:str = os.path.join(data_dir,'train_data.csv')
+    test_data_path:str = os.path.join(data_dir,'test_data.csv')
+    new_data_path:str = os.path.join(data_dir,'new_data.csv')
 
 class DataIngestion:
     def __init__(self):
@@ -21,12 +22,12 @@ class DataIngestion:
     def fetch_data(self):
         try:
             logging.info("Creating instace to fetch data from mongodb atlas server....")
-            client = MongoClient("mongodb+srv://himayudhoke:so34JLowMFfHWGb5@cluster0.lufwdkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+            client = MongoClient("mongodb+srv://himayudhoke:1X5idC51cKy8EntW@cluster0.lufwdkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
             database = client["thane_traffic"]
             collection = database["traffic_flow_data"]
 
             logging.info("Fetching data from atlas cloud server....")
-            document = list(collection.find().limit(29446))
+            document = list(collection.find().limit(123621))
             df = pd.DataFrame(document)
             df.to_csv(self.data_config.raw_data_path,index=False,header=True)
         
@@ -36,9 +37,9 @@ class DataIngestion:
     def split_into_train(self):
         try:
             logging.info("Reading Raw Data....")
-            df = pd.read_csv(r"artifacts\raw_data.csv")
+            df = pd.read_csv(r"artifacts\RawData\raw_data.csv")
             df['timestamp'] = pd.to_datetime(df['timestamp'])
-            tranning_time = pd.to_datetime('2025-09-09 17:52:17.764')
+            tranning_time = pd.to_datetime('2025-10-18 17:52:04.288')
 
             logging.info("splitting into Train data and saving it into artifacts folder...")
             tranning_phase = df[df['timestamp']<=tranning_time]
@@ -52,9 +53,9 @@ class DataIngestion:
     def split_into_test(self):
         try:
             logging.info("Reading Raw Data....")
-            df = pd.read_csv(r"artifacts\raw_data.csv")
+            df = pd.read_csv(r"artifacts\RawData\raw_data.csv")
             df['timestamp'] = pd.to_datetime(df['timestamp'])
-            testing_time = pd.to_datetime('2025-09-09 17:52:17.764')
+            testing_time = pd.to_datetime('2025-10-18 17:52:04.288')
 
             logging.info("splitting into Test data and saving it into artifacts folder...")
             testing_phase = df[df['timestamp']>testing_time]
@@ -69,12 +70,12 @@ class DataIngestion:
             database = client["thane_traffic"]
             collection = database["traffic_flow_data"]
 
-            start_date = datetime.combine(datetime.today(),datetime.min.time())
-            end_date = start_date + timedelta(days=2)
-
+            end_date = datetime.combine(datetime.today(),datetime.min.time())
+            start_date = end_date - timedelta(days=3)
+            
             query = {"timestamp":{"$gte":start_date,"$lt":end_date}}
             document = list(collection.find(query))
-            logging.info("Fetch data sucessfully...")
+            logging.info("Fetch data sucessfully from 3 dys ago...")
 
             df = pd.DataFrame(document)
             df.to_csv(self.data_config.new_data_path,index=False,header=True)

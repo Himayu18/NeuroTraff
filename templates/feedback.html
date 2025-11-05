@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTraff - Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="background-pattern"></div>
+    <div class="floating-particles" id="particles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor: pointer;">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <nav class="main-nav" id="navbar">
+                <a href="{{ url_for('home') }}" class="nav-link active">Home</a>
+                <a href="{{ url_for('predictions') }}" class="nav-link">WhatIfTraffic</a>
+                <a href="{{ url_for('analytics') }}" class="nav-link">Traffic Insights</a>
+                <a href="{{ url_for('about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('feedback') }}" class="feedback-btn">Submit Feedback</a>
+            </nav>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Real-time Analysis</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section id="feedback" class="section active">
+            <h2 class="page-title">Submit Feedback</h2>
+            <div class="content-card">
+                <h3>Help Us Improve Traffic Predictions</h3>
+                <p>Share your traffic experience to help us enhance our prediction accuracy.</p>
+
+                <form id="feedbackForm" class="feedback-form">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input type="text" id="userName" name="userName" class="form-input" required
+                            placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="feedbackRoad">Road Name</label>
+                        <select id="feedbackRoad" name="roadName" class="form-input" required>
+                            <option value="">Select a Road</option>
+                            <option value="SH-42 (Ghodbunder Road)">SH-42 (Ghodbunder Road)</option>
+                            <option value="Eastern Express Highway">Eastern Express Highway</option>
+                            <option value="Mumbai-Nashik Expressway (NH 3)">Mumbai-Nashik Expressway</option>
+                            <option value="LBS Marg">LBS Marg</option>
+                            <option value="Thane-Belapur Road">Thane-Belapur Road</option>
+                            <option value="Sion-Panvel Expressway">Sion-Panvel Expressway</option>
+                            <option value="Mumbai - Agra Road (NH3/NH160)">Mumbai - Agra Road (NH3/NH160)</option>
+                            <option value="MDR 64">MDR 64</option>
+                            <option value="SH 40">SH 40</option>
+                            <option value="MDR 62">MDR 62</option>
+                            <option value="Ring Road (Kalyan-Dombivli)">Ring Road (Kalyan-Dombivli)</option>
+                            <option value="Multi-Modal Corridor">Multi-Modal Corridor</option>
+                            <option value="Mumbra Bypass Road">Mumbra Bypass Road</option>
+                            <option value="Kalyan-Shilphata Road">Kalyan-Shilphata Road</option>
+                            <option value="Kalyan-Bhiwandi Road">Kalyan-Bhiwandi Road</option>
+                            <option value="Kalyan-Badlapur Road">Kalyan-Badlapur Road</option>
+                            <option value="Dombivli-Manpada Road">Dombivli-Manpada Road</option>
+                            <option value="Bhiwandi Bypass Road">Bhiwandi Bypass Road</option>
+                            <option value="Airoli-Thane Creek Bridge Road">Airoli-Thane Creek Bridge Road</option>
+                            <option value="Dombivli-Kalyan Link Road">Dombivali-Kalyan Link Road</option>
+                            <option value="Kalyan-Karjat Road">Kalyan-Karjat Road</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trafficCondition">Traffic Condition</label>
+                        <select id="trafficCondition" name="trafficCondition" class="form-input" required>
+                            <option value="">Select Traffic Condition</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="delayMinutes">Delay Experienced (in minutes)</label>
+                        <input type="number" id="delayMinutes" name="delayMinutes" class="form-input" required
+                            placeholder="Enter delay in minutes" min="0" max="300">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weatherCondition">Weather Conditions</label>
+                        <select id="weatherCondition" name="weatherCondition" class="form-input" required>
+                            <option value="">Select Weather Condition</option>
+                            <option value="normal">Normal</option>
+                            <option value="rainy">Rainy</option>
+                            <option value="foggy">Foggy</option>
+                            <option value="stormy">Stormy</option>
+                            <option value="cloudy">Cloudy</option>
+                            <option value="sunny">Sunny</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description/Comments</label>
+                        <textarea id="description" name="description" class="form-textarea" rows="4"
+                            placeholder="Share additional details about your traffic experience..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Satisfaction Rating</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" required>
+                            <label for="star5" class="star">★</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" class="star">★</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" class="star">★</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" class="star">★</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" class="star">★</label>
+                        </div>
+                        <p class="rating-text" id="ratingText">Select a rating</p>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Feedback</button>
+                </form>
+
+                <div id="feedbackSuccess" class="feedback-success" style="display: none;">
+                    <div class="success-icon">✓</div>
+                    <h3>Thank You!</h3>
+                    <p>Your feedback has been submitted successfully.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
