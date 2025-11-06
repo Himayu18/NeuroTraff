@@ -30,4 +30,5 @@ COPY . .
 EXPOSE 5000
 
 # Step 9: Run with Gunicorn
-CMD ["gunicorn", "app:app", "-w", "2", "--timeout", "300", "-b", "0.0.0.0:5000"]
+CMD exec gunicorn app:app -w 2 --timeout 300 -b 0.0.0.0:${PORT:-5000}
+

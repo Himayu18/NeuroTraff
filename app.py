@@ -107,7 +107,7 @@ def get_feedbackformdata():
         import Features.feedbackform as feedbackform
 
         feedbackform.get_response(data)
-        return 'data feteched successfull'
+        return jsonify({'status': 'success', 'message': 'Feedback received'})
     except Exception as e:
         from src.exception import CustomException
         raise CustomException(sys, e)
@@ -132,5 +132,4 @@ def selected_road():
 # ----------------- Run app -----------------
 if __name__ == '__main__':
     print("Starting Flask app...")
-    # port = int(os.environ.get('PORT', 5000))
-    # app.run(host='0.0.0.0', port=port)
+    # app.run(debug=True)
