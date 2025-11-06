@@ -33,6 +33,27 @@
             </div>
         </div>
     </header>
+     <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
+        ☰
+    </button>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileNav" class="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <div class="logo-icon">🚦</div>
+                <h1>NeuroTraff</h1>
+            </div>
+            <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="{{ url_for('home') }}" class="active">🏠 Home</a>
+            <a href="{{ url_for('predictions') }}">🔮 What If Traffic</a>
+            <a href="{{ url_for('analytics') }}">📊 Traffic Insights</a>
+            <a href="{{ url_for('about') }}">ℹ️ About</a>
+            <a href="{{ url_for('feedback') }}">💬 Submit Feedback</a>
+        </nav>
+    </div>
 
     <div class="main-container">
         <section id="home" class="section active">
