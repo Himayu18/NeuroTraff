@@ -120,14 +120,20 @@ def selected_road():
         import Features.prediction as prediction
 
         traffic_level, clear_time_estimate = prediction.predict_real_time_traffic(selected)
+
         return jsonify({
             "status": "success",
             "traffic_level": traffic_level,
             "clear_time_estimate": clear_time_estimate
         })
     except Exception as e:
-        from src.exception import CustomException
-        raise CustomException(sys, e)
+        print("Error in /selected_road:", e)
+        # Instead of raising CustomException:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
 
 # ----------------- Run app -----------------
 if __name__ == '__main__':

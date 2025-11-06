@@ -126,8 +126,6 @@ def fetch_traffic_data(point):
 def predict_real_time_traffic(road):
     now = datetime.now(timezone.utc)
     hour = now.hour
-    if not (5 <= hour < 24):
-        return jsonify({"error": "Outside allowed hours for fetching traffic data"}), 403
 
     road = road.strip() if road else None
     points = road_points.get(road)
