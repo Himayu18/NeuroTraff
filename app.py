@@ -107,7 +107,7 @@ def get_feedbackformdata():
         import Features.feedbackform as feedbackform
 
         feedbackform.get_response(data)
-        return jsonify({'status': 'success', 'message': 'Feedback received'})
+        return 'data feteched successfull'
     except Exception as e:
         from src.exception import CustomException
         raise CustomException(sys, e)
