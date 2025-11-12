@@ -1084,4 +1084,492 @@ document.addEventListener('blur', function(e) {
     }
 }, true);
 
+// Enhanced Form Validation for NeuroTraff Feedback Form
 
+// Utility function to show error message
+function showError(inputId, message) {
+    const input = document.getElementById(inputId);
+    
+    // Remove any existing error
+    removeError(inputId);
+    
+    // Create error message element
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.id = `${inputId}-error`;
+    errorDiv.innerHTML = `<span class="error-icon">⚠️</span> ${message}`;
+    errorDiv.style.cssText = `
+        color: #ff4757;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 71, 87, 0.1);
+        border: 1px solid rgba(255, 71, 87, 0.3);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideDown 0.3s ease;
+    `;
+    
+    // Add error styling to input
+    input.style.borderColor = '#ff4757';
+    input.style.boxShadow = '0 0 15px rgba(255, 71, 87, 0.3)';
+    
+    // Insert error message after input
+    input.parentElement.appendChild(errorDiv);
+}
+
+// Utility function to remove error message
+function removeError(inputId) {
+    const input = document.getElementById(inputId);
+    const existingError = document.getElementById(`${inputId}-error`);
+    
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Reset input styling
+    input.style.borderColor = 'rgba(0, 212, 255, 0.3)';
+    input.style.boxShadow = '';
+}
+
+// Validation functions
+function validateName(name) {
+    const trimmedName = name.trim();
+    
+    if (!trimmedName) {
+        return { valid: false, message: 'Name is required' };
+    }
+    
+    if (trimmedName.length < 2) {
+        return { valid: false, message: 'Name must be at least 2 characters long' };
+    }
+    
+    if (trimmedName.length > 50) {
+        return { valid: false, message: 'Name must not exceed 50 characters' };
+    }
+    
+    // Check for valid characters (letters, spaces, hyphens, apostrophes)
+    const nameRegex = /^[a-zA-Z\s\-']+$/;
+    if (!nameRegex.test(trimmedName)) {
+        return { valid: false, message: 'Name can only contain letters, spaces, hyphens, and apostrophes' };
+    }
+    
+    // Check for excessive spaces
+    if (/\s{3,}/.test(trimmedName)) {
+        return { valid: false, message: 'Name contains too many consecutive spaces' };
+    }
+    
+    return { valid: true };
+}
+
+function validateRoadSelection(roadValue) {
+    if (!roadValue || roadValue.trim() === '') {
+        return { valid: false, message: 'Please select a road from the dropdown' };
+    }
+    
+    return { valid: true };
+}
+
+function validateTrafficCondition(condition) {
+    const validConditions = ['low', 'medium', 'high'];
+    
+    if (!condition || condition.trim() === '') {
+        return { valid: false, message: 'Please select a traffic condition' };
+    }
+    
+    if (!validConditions.includes(condition.toLowerCase())) {
+        return { valid: false, message: 'Invalid traffic condition selected' };
+    }
+    
+    return { valid: true };
+}
+
+function validateDelay(delay) {
+    const delayValue = parseInt(delay);
+    
+    if (delay === '' || delay === null || delay === undefined) {
+        return { valid: false, message: 'Delay time is required' };
+    }
+    
+    if (isNaN(delayValue)) {
+        return { valid: false, message: 'Delay must be a valid number' };
+    }
+    
+    if (delayValue < 0) {
+        return { valid: false, message: 'Delay cannot be negative' };
+    }
+    
+    if (delayValue > 300) {
+        return { valid: false, message: 'Delay cannot exceed 300 minutes (5 hours). Please enter a realistic value.' };
+    }
+    
+    // Check for decimal values
+    if (!Number.isInteger(delayValue)) {
+        return { valid: false, message: 'Delay must be a whole number (no decimals)' };
+    }
+    
+    return { valid: true };
+}
+
+function validateWeatherCondition(weather) {
+    const validWeather = ['normal', 'rainy', 'foggy', 'stormy', 'cloudy', 'sunny'];
+    
+    if (!weather || weather.trim() === '') {
+        return { valid: false, message: 'Please select a weather condition' };
+    }
+    
+    if (!validWeather.includes(weather.toLowerCase())) {
+        return { valid: false, message: 'Invalid weather condition selected' };
+    }
+    
+    return { valid: true };
+}
+
+function validateDescription(description) {
+    const trimmedDesc = description.trim();
+    
+    // Description is optional, but if provided, validate it
+    if (trimmedDesc.length > 500) {
+        return { valid: false, message: 'Description must not exceed 500 characters' };
+    }
+    
+    // Check for suspicious patterns (excessive special characters)
+    const specialCharCount = (trimmedDesc.match(/[^a-zA-Z0-9\s.,!?'-]/g) || []).length;
+    if (specialCharCount > trimmedDesc.length * 0.3) {
+        return { valid: false, message: 'Description contains too many special characters' };
+    }
+    
+    return { valid: true };
+}
+
+function validateRating() {
+    const selectedRating = document.querySelector('input[name="rating"]:checked');
+    
+    if (!selectedRating) {
+        return { valid: false, message: 'Please select a rating' };
+    }
+    
+    const ratingValue = parseInt(selectedRating.value);
+    if (ratingValue < 1 || ratingValue > 5) {
+        return { valid: false, message: 'Rating must be between 1 and 5' };
+    }
+    
+    return { valid: true };
+}
+
+// Real-time validation as user types
+function setupRealTimeValidation() {
+    const userName = document.getElementById('userName');
+    const delayMinutes = document.getElementById('delayMinutes');
+    const description = document.getElementById('description');
+    
+    if (userName) {
+        userName.addEventListener('blur', function() {
+            const validation = validateName(this.value);
+            if (!validation.valid && this.value.trim() !== '') {
+                showError('userName', validation.message);
+            } else {
+                removeError('userName');
+            }
+        });
+        
+        userName.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                removeError('userName');
+            }
+        });
+    }
+    
+    if (delayMinutes) {
+        delayMinutes.addEventListener('blur', function() {
+            const validation = validateDelay(this.value);
+            if (!validation.valid && this.value !== '') {
+                showError('delayMinutes', validation.message);
+            } else {
+                removeError('delayMinutes');
+            }
+        });
+        
+        delayMinutes.addEventListener('input', function() {
+            // Remove non-numeric characters
+            this.value = this.value.replace(/[^0-9]/g, '');
+            removeError('delayMinutes');
+        });
+    }
+    
+    if (description) {
+        const charCounter = document.createElement('div');
+        charCounter.className = 'char-counter';
+        charCounter.style.cssText = `
+            font-size: 0.8rem;
+            color: #a0a0a0;
+            text-align: right;
+            margin-top: 0.3rem;
+        `;
+        description.parentElement.appendChild(charCounter);
+        
+        description.addEventListener('input', function() {
+            const length = this.value.length;
+            charCounter.textContent = `${length}/500 characters`;
+            
+            if (length > 500) {
+                charCounter.style.color = '#ff4757';
+                showError('description', 'Description exceeds 500 characters');
+            } else {
+                charCounter.style.color = '#a0a0a0';
+                removeError('description');
+            }
+        });
+    }
+    
+    // Dropdown validations
+    const feedbackRoad = document.getElementById('feedbackRoad');
+    const trafficCondition = document.getElementById('trafficCondition');
+    const weatherCondition = document.getElementById('weatherCondition');
+    
+    [feedbackRoad, trafficCondition, weatherCondition].forEach(dropdown => {
+        if (dropdown) {
+            dropdown.addEventListener('change', function() {
+                removeError(this.id);
+            });
+        }
+    });
+    
+    // Star rating validation
+    const starRating = document.querySelector('.star-rating');
+    if (starRating) {
+        starRating.addEventListener('change', function() {
+            const errorDiv = document.getElementById('rating-error');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        });
+    }
+}
+
+// Show rating error (special case)
+function showRatingError(message) {
+    const ratingContainer = document.querySelector('.star-rating').parentElement;
+    
+    // Remove existing error
+    const existingError = document.getElementById('rating-error');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.id = 'rating-error';
+    errorDiv.innerHTML = `<span class="error-icon">⚠️</span> ${message}`;
+    errorDiv.style.cssText = `
+        color: #ff4757;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 71, 87, 0.1);
+        border: 1px solid rgba(255, 71, 87, 0.3);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideDown 0.3s ease;
+    `;
+    
+    ratingContainer.appendChild(errorDiv);
+}
+
+// Enhanced form submission with validation
+function setupEnhancedFormSubmission() {
+    const feedbackForm = document.getElementById('feedbackForm');
+    
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear all previous errors
+            document.querySelectorAll('.error-message').forEach(error => error.remove());
+            
+            // Get form values
+            const formData = {
+                name: document.getElementById('userName').value,
+                road: document.getElementById('feedbackRoad').value,
+                trafficCondition: document.getElementById('trafficCondition').value,
+                delay: document.getElementById('delayMinutes').value,
+                weather: document.getElementById('weatherCondition').value,
+                description: document.getElementById('description').value,
+                rating: document.querySelector('input[name="rating"]:checked')?.value
+            };
+            
+            // Validate all fields
+            let isValid = true;
+            let firstErrorField = null;
+            
+            // Validate name
+            const nameValidation = validateName(formData.name);
+            if (!nameValidation.valid) {
+                showError('userName', nameValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('userName');
+            }
+            
+            // Validate road
+            const roadValidation = validateRoadSelection(formData.road);
+            if (!roadValidation.valid) {
+                showError('feedbackRoad', roadValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('feedbackRoad');
+            }
+            
+            // Validate traffic condition
+            const trafficValidation = validateTrafficCondition(formData.trafficCondition);
+            if (!trafficValidation.valid) {
+                showError('trafficCondition', trafficValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('trafficCondition');
+            }
+            
+            // Validate delay
+            const delayValidation = validateDelay(formData.delay);
+            if (!delayValidation.valid) {
+                showError('delayMinutes', delayValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('delayMinutes');
+            }
+            
+            // Validate weather
+            const weatherValidation = validateWeatherCondition(formData.weather);
+            if (!weatherValidation.valid) {
+                showError('weatherCondition', weatherValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('weatherCondition');
+            }
+            
+            // Validate description (optional but validated if provided)
+            const descValidation = validateDescription(formData.description);
+            if (!descValidation.valid) {
+                showError('description', descValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.getElementById('description');
+            }
+            
+            // Validate rating
+            const ratingValidation = validateRating();
+            if (!ratingValidation.valid) {
+                showRatingError(ratingValidation.message);
+                isValid = false;
+                if (!firstErrorField) firstErrorField = document.querySelector('.star-rating');
+            }
+            
+            // If validation fails, scroll to first error
+            if (!isValid) {
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.focus();
+                }
+                
+                // Shake the submit button
+                const submitBtn = this.querySelector('.submit-btn');
+                submitBtn.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    submitBtn.style.animation = '';
+                }, 500);
+                
+                return;
+            }
+            
+            // If all validations pass, show loading state
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span style="font-size: 1.2rem;">⏳</span> Submitting...';
+            submitBtn.disabled = true;
+            
+            // Send to backend
+            fetch('/submit_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Feedback response:', data);
+                
+                // Show success message
+                document.getElementById('feedbackForm').style.display = 'none';
+                document.getElementById('feedbackSuccess').style.display = 'block';
+                
+                // Reset form and button after 3 seconds
+                setTimeout(() => {
+                    document.getElementById('feedbackForm').reset();
+                    document.getElementById('feedbackForm').style.display = 'block';
+                    document.getElementById('feedbackSuccess').style.display = 'none';
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Reset rating text
+                    const ratingText = document.getElementById('ratingText');
+                    if (ratingText) {
+                        ratingText.textContent = 'Select a rating';
+                        ratingText.style.color = '#a0a0a0';
+                    }
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error submitting feedback:', error);
+                
+                // Show user-friendly error message
+                alert('⚠️ Error submitting feedback. Please check your internet connection and try again.');
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+    }
+}
+
+// Add CSS for animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .error-message .error-icon {
+        animation: pulse 1s ease infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+`;
+document.head.appendChild(style);
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    setupRealTimeValidation();
+    setupEnhancedFormSubmission();
+    console.log('✅ Enhanced feedback form validation initialized');
+});
