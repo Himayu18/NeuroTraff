@@ -1,1 +1,0 @@
-["delay ratio","Delay","Traffic level"]
