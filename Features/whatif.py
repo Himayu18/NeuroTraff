@@ -172,8 +172,8 @@ def analyze_whatif(data):
         speed_reduction_factor = 1.0
         
         # 1. RAIN: 25% reduction
-        if is_rain is not None and is_rain:
-            speed_reduction_factor *= 0.75
+        # if is_rain is not None and is_rain:
+        #     speed_reduction_factor *= 0.75
         
         # 2. VEHICLE VOLUME: 50% to 200%
         if vehicle_volume is not None:
